@@ -19,12 +19,11 @@ describe('api', function () {
 
     describe('cancel()', function () {
       it('should abort any open XHR requests', function () {
-        const req1 = new Request({
-          abort: jest.fn(),
-        });
-        const req2 = new Request({
-          abort: jest.fn(),
-        });
+        const abort1 = jest.fn();
+        const abort2 = jest.fn();
+
+        const req1 = new Request(new Promise(() => null), {abort: abort1});
+        const req2 = new Request(new Promise(() => null), {abort: abort2});
 
         api.activeRequests = {
           1: req1,
@@ -33,8 +32,8 @@ describe('api', function () {
 
         api.clear();
 
-        expect(req1.xhr.abort).toHaveBeenCalledTimes(1);
-        expect(req2.xhr.abort).toHaveBeenCalledTimes(1);
+        expect(req1.aborter.abort).toHaveBeenCalledTimes(1);
+        expect(req2.aborter.abort).toHaveBeenCalledTimes(1);
       });
     });
   });
