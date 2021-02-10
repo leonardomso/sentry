@@ -43,7 +43,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterUniqueTogether(
             name="externaluser",
-            unique_together=set([("organizationmember", "provider", "external_id")]),
+            unique_together={("organizationmember", "provider", "external_id")},
         ),
         migrations.RemoveField(
             model_name="externaluser",
