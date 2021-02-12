@@ -4,7 +4,7 @@ import itertools
 from sentry.api.event_search import get_filter
 from sentry.api.utils import get_date_range_rollup_from_params
 from sentry.utils.dates import to_timestamp
-from sentry.utils.snuba import Dataset, raw_query
+from sentry.utils.snuba import Dataset, raw_query, resolve_condition
 
 """
 The new Sessions API defines a "metrics"-like interface which is can be used in
@@ -251,8 +251,11 @@ class QueryDefinition:
         # also: start, end; but we got those ourselves.
         snuba_filter = get_filter(self.query, params)
 
+        # this makes sure that literals in complex queries are properly quoted
+        conditions = [resolve_condition(c, lambda col: col) for c in snuba_filter.conditions]
+
         self.aggregations = snuba_filter.aggregations
-        self.conditions = snuba_filter.conditions
+        self.conditions = conditions
         self.filter_keys = snuba_filter.filter_keys
 
 
