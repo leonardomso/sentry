@@ -44,6 +44,8 @@ class OrganizationSessionsEndpointTest(APITestCase, SnubaTestCase):
         )
         self.create_member(user=self.user, organization=self.organization3, role="admin", teams=[])
 
+        self.create_environment(self.project2, name="development")
+
         template = {
             "distinct_id": "00000000-0000-0000-0000-000000000000",
             "status": "exited",
@@ -223,6 +225,21 @@ class OrganizationSessionsEndpointTest(APITestCase, SnubaTestCase):
                 "interval": "1d",
                 "field": ["sum(session)"],
                 "query": "environment:development",
+            }
+        )
+
+        assert response.status_code == 200, response.content
+        assert result_sorted(response.data)["groups"] == [
+            {"by": {}, "series": {"sum(session)": [1]}, "totals": {"sum(session)": 1}}
+        ]
+
+        response = self.do_request(
+            {
+                "project": [-1],
+                "statsPeriod": "1d",
+                "interval": "1d",
+                "field": ["sum(session)"],
+                "environment": ["development"],
             }
         )
 

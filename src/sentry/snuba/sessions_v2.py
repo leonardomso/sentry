@@ -209,7 +209,7 @@ class QueryDefinition:
     `fields` and `groupby` definitions as [`ColumnDefinition`] objects.
     """
 
-    def __init__(self, query, project_ids=None):
+    def __init__(self, query, params):
         self.query = query.get("query", "")
         raw_fields = query.getlist("field", [])
         raw_groupby = query.getlist("groupBy", [])
@@ -246,7 +246,9 @@ class QueryDefinition:
             query_groupby.update(groupby.get_snuba_groupby())
         self.query_groupby = list(query_groupby)
 
-        params = {"project_id": project_ids or []}
+        # the `params` are:
+        # project_id, organization_id, environment;
+        # also: start, end; but we got those ourselves.
         snuba_filter = get_filter(self.query, params)
 
         self.aggregations = snuba_filter.aggregations
