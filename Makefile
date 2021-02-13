@@ -61,7 +61,7 @@ ensure-venv:
 ensure-pinned-pip: ensure-venv upgrade-pip
 
 upgrade-pip:
-	$(PIP) install --no-cache-dir --upgrade "pip==20.2.4"
+	$(PIP) install --no-cache-dir --upgrade "pip>=20.0.2"
 
 setup-git-config:
 	@git config --local branch.autosetuprebase always
