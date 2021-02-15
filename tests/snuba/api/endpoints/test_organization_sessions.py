@@ -121,6 +121,21 @@ class OrganizationSessionsEndpointTest(APITestCase, SnubaTestCase):
         assert response.status_code == 400, response.content
         assert response.data == {"detail": 'Invalid groupBy: "envriomnent"'}
 
+    def test_invalid_query(self):
+        response = self.do_request({"field": ["sum(session)"], "query": ["foo:bar"]})
+
+        assert response.status_code == 400, response.content
+        assert response.data == {"detail": 'Invalid query field: "foo"'}
+
+        response = self.do_request(
+            {"field": ["sum(session)"], "query": ["release:foo-bar@1.2.3 (123)"]}
+        )
+
+        assert response.status_code == 400, response.content
+        # TODO: it would be good to provide a better error here,
+        # since its not obvious where `message` comes from.
+        assert response.data == {"detail": 'Invalid query field: "message"'}
+
     def test_too_many_points(self):
         # TODO: looks like this is well within the range of valid points
         return

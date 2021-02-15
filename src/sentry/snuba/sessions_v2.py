@@ -190,12 +190,22 @@ class SessionStatusGroupBy:
         return [("session.status", key) for key in ["healthy", "abnormal", "crashed", "errored"]]
 
 
+# NOTE: in the future we might add new `user_agent` and `os` fields
+
 GROUPBY_MAP = {
     "project": SimpleGroupBy("project_id", "project"),
     "environment": SimpleGroupBy("environment"),
     "release": SimpleGroupBy("release"),
     "session.status": SessionStatusGroupBy(),
 }
+
+CONDITION_COLUMNS = ["project", "environment", "release"]
+
+
+def resolve_column(col):
+    if col in CONDITION_COLUMNS:
+        return col
+    raise InvalidField(f'Invalid query field: "{col}"')
 
 
 class InvalidField(Exception):
@@ -251,8 +261,9 @@ class QueryDefinition:
         # also: start, end; but we got those ourselves.
         snuba_filter = get_filter(self.query, params)
 
-        # this makes sure that literals in complex queries are properly quoted
-        conditions = [resolve_condition(c, lambda col: col) for c in snuba_filter.conditions]
+        # this makes sure that literals in complex queries are properly quoted,
+        # and unknown fields are raised as errors
+        conditions = [resolve_condition(c, resolve_column) for c in snuba_filter.conditions]
 
         self.aggregations = snuba_filter.aggregations
         self.conditions = conditions
