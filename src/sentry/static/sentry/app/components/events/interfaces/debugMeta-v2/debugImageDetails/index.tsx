@@ -22,8 +22,6 @@ import {getFileName} from '../utils';
 import Candidates from './candidates';
 import {INTERNAL_SOURCE, INTERNAL_SOURCE_LOCATION} from './utils';
 
-type Candidates = Image['candidates'];
-
 type Props = AsyncComponent['props'] &
   ModalRenderProps & {
     projectId: Project['id'];
@@ -45,7 +43,7 @@ class DebugImageDetails extends AsyncComponent<Props, State> {
     };
   }
 
-  getUplodedDebugFiles(candidates: Candidates) {
+  getUplodedDebugFiles(candidates: Image['candidates']) {
     return candidates.find(candidate => candidate.source === INTERNAL_SOURCE);
   }
 
@@ -86,7 +84,10 @@ class DebugImageDetails extends AsyncComponent<Props, State> {
     return endpoints;
   }
 
-  sortCandidates(candidates: Candidates, unAppliedCandidates: Candidates): Candidates {
+  sortCandidates(
+    candidates: Image['candidates'],
+    unAppliedCandidates: Image['candidates']
+  ): Image['candidates'] {
     const [noPermissionCandidates, restNoPermissionCandidates] = partition(
       candidates,
       candidate => candidate.download.status === CandidateDownloadStatus.NO_PERMISSION
@@ -153,7 +154,7 @@ class DebugImageDetails extends AsyncComponent<Props, State> {
         location: `${INTERNAL_SOURCE_LOCATION}${debugFile.id}`,
         source: INTERNAL_SOURCE,
         source_name: debugFile.objectName,
-      })) as Candidates;
+      })) as Image['candidates'];
 
     // Check for deleted candidates (debug files)
     const debugFileIds = new Set(debugFiles.map(debugFile => debugFile.id));
@@ -174,7 +175,7 @@ class DebugImageDetails extends AsyncComponent<Props, State> {
         };
       }
       return candidate;
-    }) as Candidates;
+    }) as Image['candidates'];
 
     return this.sortCandidates(convertedCandidates, unAppliedCandidates);
   }

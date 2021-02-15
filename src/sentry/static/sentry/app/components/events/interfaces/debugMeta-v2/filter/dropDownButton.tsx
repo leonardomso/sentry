@@ -11,7 +11,7 @@ type Props = {
   checkedQuantity: number;
 };
 
-const DropDownButton = ({isOpen, getActorProps, checkedQuantity}: Props) => {
+function DropDownButton({isOpen, getActorProps, checkedQuantity}: Props) {
   if (checkedQuantity > 0) {
     return (
       <StyledDropdownButton
@@ -36,7 +36,7 @@ const DropDownButton = ({isOpen, getActorProps, checkedQuantity}: Props) => {
       {t('Filter By')}
     </StyledDropdownButton>
   );
-};
+}
 
 export default DropDownButton;
 
