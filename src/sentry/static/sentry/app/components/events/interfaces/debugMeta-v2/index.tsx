@@ -304,13 +304,6 @@ class DebugMeta extends React.PureComponent<Props, State> {
   }
 
   getFilterOptions(images: Images): FilterOptions {
-<<<<<<< HEAD
-    return [...new Set(images.map(image => image.status))].map(status => ({
-      id: status,
-      symbol: <Status status={status} />,
-      isChecked: status !== ImageStatus.UNUSED,
-    }));
-=======
     return {
       [t('Status')]: [...new Set(images.map(image => image.status))].map(status => ({
         id: status,
@@ -318,7 +311,6 @@ class DebugMeta extends React.PureComponent<Props, State> {
         isChecked: status !== ImageStatus.UNUSED,
       })),
     };
->>>>>>> ref(dynamic-sampling): Add candidates modal filter
   }
 
   getFilteredImagesByFilter(filteredImages: Images, filterOptions: FilterOptions) {
@@ -455,30 +447,6 @@ class DebugMeta extends React.PureComponent<Props, State> {
     const {searchTerm, filteredImagesByFilter: images, filterOptions} = this.state;
 
     if (!!images.length) {
-<<<<<<< HEAD
-      return null;
-    }
-
-    if (searchTerm && !images.length) {
-      const hasActiveFilter = filterOptions.find(filterOption => filterOption.isChecked);
-      return (
-        <React.Fragment>
-          <p>{t('Sorry, no images match your search query')}</p>
-          {hasActiveFilter ? (
-            <Button onClick={this.handleResetFilter} priority="primary">
-              {t('Reset filter')}
-            </Button>
-          ) : (
-            <Button onClick={this.handleResetSearchBar} priority="primary">
-              {t('Clear search bar')}
-            </Button>
-          )}
-        </React.Fragment>
-      );
-    }
-
-    return t('There are no images to be displayed');
-=======
       return {};
     }
 
@@ -504,7 +472,6 @@ class DebugMeta extends React.PureComponent<Props, State> {
     return {
       emptyMessage: t('There are no images to be displayed'),
     };
->>>>>>> ref(dynamic-sampling): Add candidates modal filter
   }
 
   render() {
